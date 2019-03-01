@@ -1,17 +1,17 @@
-# Python Chatbot Architecture ResponsesAPI
+# Python Scrapper using Selenuim and mongoDB
 
 
 ## API para conexión con base de datos y respuestas de chat
 
-El api está construido en Python utilizando Flask. La base de datos es una basada en documentos, actualmente mongodb.
+El scrapper está construido en Python utilizando Flask. La base de datos es una basada en documentos, actualmente mongoDB. El scrapper se desarrolló utilizando Selenium.
 
 
 ##### Instalación
 
 ```powershell
-git clone git@git.nearshoremx.com:chatbot-architecture/responses-api-microservice.git
-virtualenv envResponses
-cd responsesAPI
+git clone https://github.com/dcamhi/workyCharactersScrapper.git
+virtualenv envScrapper
+
 source ../envResponses/bin/activate
 pip3 install -r requirements.txt
 python3 manage.py runserver
