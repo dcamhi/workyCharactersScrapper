@@ -63,7 +63,12 @@ manager.add_command("runserver", Server(
 ```
 ### /application.py
 ##### Definición de la aplicación, los blueprints y las rutas
+```powershell
+app.register_blueprint(characters_app, url_prefix="/api/v1/")
 
+#la ruta del scrapper se encuentra en:
+#localhost:8080/api/v1/characters
+```
 ### characters/api.py
 
 ##### Aquí se encuentra el código del scrapper como tal.

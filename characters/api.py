@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 #HEADERS FOR SCRAPPER
 headers = {'User-agent': 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; FSL 7.0.6.01001)'}
-headless_mode = False
+headless_mode = True
 
 #SCRAPPER FUNCTION START
 @characters_app.route('/characters', methods=['GET'])
@@ -43,7 +43,7 @@ def get_characters():
         response_data = {}
         driver = webdriver.Chrome(chrome_options=chrome_options)
         driver.get(basePage)
-
+        last_page = False
         #GET LIST OF CHARACTERS 
         char_list = driver.find_elements_by_xpath('//*[@id="mw-content-text"]/div[2]/ul/li/a')
 
@@ -69,7 +69,8 @@ def get_characters():
                 p_count = 0
                 section = {}
                 p_list = {}
-                
+                details = {}
+                header = ""
                 #FOREACH CHARACTER INFO SECTION
                 for child_key in range(len(child_elem)):
                     
@@ -100,9 +101,38 @@ def get_characters():
                             p_list[str(p_count)] = child_elem[child_key].text  
                     elif flag == 1:
                         new_key = child_elem[child_key].text
+                      
+                #GET DETAILS TABLE
+                table = driver.find_element_by_class_name('infobox')
+                #FOR EACH TABLE ROW
+                rows = table.find_elements(By.TAG_NAME, "tr")
+                for row in rows:
+                    #GET ALL ELEMENTS IN ROW
+                    all_children = row.find_elements_by_xpath(".//*")
+                    
+                    #ITERATE THE DETAILS TABLE AND SAVE INFO IN DICTIONARY
+                    for c in all_children:
+                        if c.get_attribute("class") == "imagecell":
+                            a = c.find_elements(By.TAG_NAME, "a")
+                            details["image"] = a[0].get_attribute("href")
+                        elif c.get_attribute("class") == "mainheader" and "edit" not in c.text:
+                            header = c.text
+                            if "Collapse" not in header and "Expand" not in header:
+                                details[header] = {}
+                        elif c.get_attribute("class") == "":
+                            if c.tag_name == "th" and "Collapse" not in header and "Expand" not in header:
+                                th = c.text
+                                details[header][th] = "pending"
+                            elif c.tag_name == "td" and "Collapse" not in header and "Expand" not in header:
+                                if header in details:
+                                    details[header][th] = c.text        
+                #print(details)
 
                 #ADD THE INFORMATION SECTION TO THE RESPONSE
                 response_data['info'] = section
+
+                #ADD THE DETAILS SECTION TO THE RESPONSE
+                response_data['details'] = details
 
                 #CLOSE WINDOWS
                 driver.close() 
@@ -111,7 +141,7 @@ def get_characters():
                 #INSERT THE ELEMENT INTO GIVEN COLECTION
                 col = charactersDB.db.characters
                 col.update_one({'title': title}, 
-                    {'$set': { 'title':title,'info': response_data['info']}}, upsert=True)
+                    {'$set': { 'title':title,'info': response_data['info'],'details': response_data['details']}}, upsert=True)
 
                 #DEBUG PURPOSES
                 print((response_data['title']))
@@ -129,7 +159,12 @@ def get_characters():
             char_list = driver.find_elements_by_xpath('//*[@id="mw-content-text"]/div[1]/ul/li/a')
 
             #IF 'NEXT' BUTTON IS NOT PRESENT AND THE CHARACTER LIST IS LESS THAN 200 (LAST PAGE) BREAK THE WHILE LOOP
-            if len(driver.find_elements_by_class_name('category-page__pagination-next'))==0 and len(char_list)<200:
+            if len(driver.find_elements_by_class_name('category-page__pagination-next'))==0 and last_page==True:
                 driver.close()
                 break
+                
+            #FOR LAST PAGE
+            if (len(char_list)<200):
+                last_page = True
+    
         return jsonify("Success")
