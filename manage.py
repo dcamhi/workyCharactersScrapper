@@ -1,8 +1,4 @@
-""" Server running file
-
-This file creates the flask application, and startup the
-server with the environment variables.
-"""
+# THIS FILE CREATES THE FLASK APP AND START SERVER
 
 import os
 from flask_script import Manager, Server

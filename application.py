@@ -1,9 +1,5 @@
-"""This file is in charge of creating the Flask Application
+# THIS IS THE FILE THAT CREATES THE FLASK APP
 
-On this file is defined all the Flask configurations such as SSL,
-the compression of the static files and the main routes for the
-API.
-"""
 from logging.config import dictConfig
 from flask_api import FlaskAPI
 from flask_compress import Compress
@@ -21,24 +17,24 @@ def create_app(debug: bool, testing: bool = False, **config_overrides) -> FlaskA
     app.config['MONGO_DBNAME'] = os.environ.get("dbName")
     app.config['MONGO_URI'] = os.environ.get("dbUrl")
 
-    # AMBIENTE ACTUAL
+    # APP CONFIGURATIONS
     app.debug = debug
     app.testing = testing
 
-    # NO CARGAR ARCHIVOS ANTIGUOS
+    # DO NOT LOAD OLD FILES
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-    # DEFAULT PARSER EL JSONPARSER
+    # SET DEFAULT PARSER - JSONPARSER
     app.config['DEFAULT_PARSERS'] = ['flask_api.parsers.JSONParser']
 
-    # CONFIGURACIONES EXTRAS
+    # EXTRA CONFIGURATIONS
     app.config.update(config_overrides)
     charactersDB.init_app(app)
 
-    # IMPORTAR BLUEPRINTES
+    # IMPORT BLUEPRINTS
     from characters.api import characters_app
 
-    # REGISTRAR BLUEPRINTS
+    # REGISTER BLUEPRINTS
     app.register_blueprint(characters_app, url_prefix="/api/v1/")
 
     Compress(app)

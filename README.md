@@ -1,20 +1,21 @@
-# Python Scrapper using Selenuim and mongoDB
+# Python Scrapper usando Selenuim y mongoDB
 
 
 ## Scrapper de información y almacenamiento en base de datos
 
-El scrapper está construido en Python utilizando Flask. La base de datos es una basada en documentos, actualmente mongoDB. El scrapper se desarrolló utilizando Selenium.
+El scrapper está construido en Python utilizando Flask. La base de datos es NoSQL y basada en documentos, mongoDB. El scrapper se desarrolló utilizando Selenium, un software que nos ayuda a navegar por la web simulando un navegador.
 
 ##### Requerimentos
 
 ```powershell
 - Git
-- Python 3
+- Python 3>
 - Virtualenv
 - Google ChromeDriver
 ```
 
 ##### Instalación
+Clonar el repositorio y crear un entorno virtual para ahí instalar las librerías necesarias para que funcione el programa.
 
 ```powershell
 git clone https://github.com/dcamhi/workyCharactersScrapper.git

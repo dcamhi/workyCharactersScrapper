@@ -1,7 +1,5 @@
-"""Configuration File
-
-All the `.env` to import must be imported from this file.
-"""
+#Configuration File
+#IMPORT ALL VARIABLES FROM .env
 
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -17,5 +15,5 @@ if DEBUG_VAR == 'True':
 else:
     DEBUG = "FALSE"
 
-# Time Zone var
+# TIME ZONE VARIABLE
 TIME_ZONE = os.environ.get("TIME_ZONE", "America/Mexico_City")
